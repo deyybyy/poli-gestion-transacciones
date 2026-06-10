@@ -1,0 +1,60 @@
+# Orquesta los dos contenedores: la API (FastAPI) y la base de datos (MariaDB).
+# Ambos comparten una red interna; la API se conecta a la BD por el hostname "db".
+
+services:
+  db:
+    image: mariadb:11.4
+    container_name: transacciones_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - poligran_network
+    # Puerto privado por defecto (Es decir, la BD solo es accesibledesde la red interna).
+    # EN caso que se quiera acceder desde local se descomenta el comentario de abajo:
+    # ports:
+    #   - "3307:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cic_api
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_NAME: ${APP_NAME}
+      DB_HOST: db          # nombre del servicio = hostname dentro de la red
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        # La API solo arranca cuando la BD reporta estado "healthy".
+        condition: service_healthy
+    networks:
+      - poligran_network
+
+volumes:
+  mariadb_data:
+
+networks:
+  poligran_network:
+    driver: bridge

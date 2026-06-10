@@ -1,0 +1,22 @@
+.vscode/
+*.zop
+__pycache__/
+.eggs/
+build/
+dist/
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ----- Variables de entorno (NUNCA subir secretos) -----
+.env
+*.env
+!.env.template
