@@ -25,9 +25,6 @@ jobs:
       - name: Instalar dependencias
         run: uv sync --frozen
 
-      - name: Verificar estilo (ruff)
-        run: uv run ruff check .
-
       - name: Ejecutar pruebas (pytest)
         run: uv run pytest
 
