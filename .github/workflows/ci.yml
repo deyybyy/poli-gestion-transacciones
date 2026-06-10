@@ -19,14 +19,17 @@ jobs:
           python-version: "3.13"
           cache: pip
 
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Instalar dependencias
-        run: pip install -r requirements-dev.txt
+        run: uv sync --frozen
 
       - name: Verificar estilo (ruff)
-        run: ruff check .
+        run: uv run ruff check .
 
       - name: Ejecutar pruebas (pytest)
-        run: pytest
+        run: uv run pytest
 
   build-imagen:
     name: Construir imagen Docker
