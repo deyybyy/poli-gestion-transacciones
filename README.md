@@ -166,6 +166,22 @@ uv run uvicorn app.main:app --reload
 > - Linux / Mac: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 > - O bien, vía pip: `pip install uv`
 
+
+# Para usar el makeFile localmente:
+
+En este caso el comando "make" me generó errores ejecutandolo tal cual, caso que falle debería ejecutarse tal que así:
+
+```sh
+   "C:\Program Files (x86)\GnuWin32\bin\make.exe" up
+   # "C:\Program Files (x86)\GnuWin32\bin\make.exe" down
+```
+Caso que funcione normalmente debería ejecutarse algo como:
+
+```sh
+   make up
+   # make down
+```
+
 ### Tests
 
 - Se crea una carpeta básica de tests para demostrar que Docker cree el artefacto del proyecto cuando se pasen los tests.
